@@ -5,22 +5,11 @@ ENV TZ=Asia/Shanghai
 
 # 安装所需的软件包并清理
 RUN apt-get update && apt-get install -y \
-    #wget \
     tar \
-    unzip \
     curl \
-    gnupg \
-    ca-certificates \
-    #openssh-server \
-    apt-transport-https && \
+    ca-certificates && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
-    install -m 0755 -d /etc/apt/keyrings && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-    chmod a+r /etc/apt/keyrings/docker.gpg && \
-    echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
-       "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-       tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    apt-get update && apt-get install -y docker-ce-cli docker-compose-plugin && \
+    sh -c "$(curl -sSL https://get.docker.com/)" -s --version 23.0 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # 设置工作目录
@@ -48,7 +37,9 @@ RUN INSTALL_MODE="stable" && \
     mv -f /app/install.override.sh /app/install.sh && \
     chmod +x /app/install.sh && \
     rm ${package_file_name} && \
-    mv /app/1panel.service /app/1panel.service.bak && \
+    rm README.md && \
+    rm LICENSE && \
+    rm /app/1panel.service && \
     bash /app/install.sh
 
 # 启动
