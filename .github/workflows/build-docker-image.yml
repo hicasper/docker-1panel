@@ -1,9 +1,5 @@
 name: Build 1Panel Docker Image
 on:
-  schedule:
-    - cron: "0 14 * * 2"  # 每周二（星期二）北京时间22:00执行
-    - cron: "0 11 * * 5"  # 每周五（星期五）北京时间19:00执行
-  #  - cron: "0 16 * * *"  # 每天的北京时间 00:00 执行
   workflow_dispatch:
     inputs:
       version:
@@ -11,7 +7,7 @@ on:
         type: string
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   build_images:
@@ -70,7 +66,7 @@ jobs:
             PANELVER=${{ steps.get_version.outputs.PANELVER }}
           platforms: linux/s390x
           file: Dockerfile-s390x
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/1panel:${{ steps.get_version.outputs.PANELVER }}, ${{ secrets.DOCKERHUB_USERNAME }}/1panel:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/1panel:${{ steps.get_version.outputs.PANELVER }}-dev, ${{ secrets.DOCKERHUB_USERNAME }}/1panel:latest-dev
       -
         name: Build and push (Manually, S390X)
         uses: docker/build-push-action@v4
@@ -81,4 +77,4 @@ jobs:
             PANELVER=${{ steps.get_version.outputs.PANELVER }}
           platforms: linux/s390x
           file: Dockerfile-s390x
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/1panel:${{ steps.get_version.outputs.PANELVER }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/1panel:${{ steps.get_version.outputs.PANELVER }}-dev
